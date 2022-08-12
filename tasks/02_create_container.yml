@@ -1,0 +1,43 @@
+---
+# get gitlab-ce
+- name: pull gitlab-ce
+  community.docker.docker_image:
+    name: gitlab/gitlab-ce
+    source: pull
+    tag: '{{ gitlab_ce_version_tag }}'
+    pull:
+      platform: amd64
+
+# start hbbs - RustDesk ID/Rendezvous server
+- name: create container gitlab_ce
+  community.docker.docker_container:
+    name: gitlab-ce
+    image: 'gitlab/gitlab-ce:{{ gitlab_ce_version_tag }}'
+    state: started
+    restart_policy: always
+    # command: ''
+    env:
+      GITLAB_HOME: '{{ gitlab_ce_persistent_path }}'
+    # links:
+    hostname: '{{ gitlab_ce_hostname }}'
+    network_mode: host
+    tty: true
+    interactive: true
+    cleanup: true
+    shm_size: 256m 
+    ports:
+      # tcp - http
+      - "80:80"
+      # udp - http
+      - "80:80/udp"
+      # tcp - https
+      - "443:443"
+      # udp - https
+      - "443:443/udp"
+      # tcp - ssh
+      - "22:22"
+    volumes:
+      - '{{ gitlab_ce_persistent_path }}/data:/var/opt/gitlab'
+      - '{{ gitlab_ce_persistent_path }}/logs:/var/log/gitlab'
+      - '{{ gitlab_ce_persistent_path }}/config:/etc/gitlab'
+...

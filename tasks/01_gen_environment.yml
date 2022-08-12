@@ -1,0 +1,13 @@
+---
+- name: create gitlab-ce persistent data directory
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    user: docker
+    group: docker
+    mode: '0755'
+  with_items:
+    - '{{ gitlab_ce_persistent_path }}/data'
+    - '{{ gitlab_ce_persistent_path }}/logs'
+    - '{{ gitlab_ce_persistent_path }}/config'
+...
