@@ -17,3 +17,12 @@ argument_specs:
       gitlab_ce_persistent_path:
         type: path
         description: Path to the persisten storage for docker container.
+      gitlab_ce_hostname:
+        type: str
+        description: FQDN of the host.
+      ssl_crt_path:
+        type: path
+        description: Path to the ssl-crt for the webserver.
+      ssl_key_path:
+        type: path
+        description: Path to the ssl-key for the webserver.

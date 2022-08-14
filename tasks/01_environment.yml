@@ -3,8 +3,8 @@
   ansible.builtin.file:
     path: '{{ item }}'
     state: directory
-    user: docker
-    group: docker
+    owner: root
+    group: root
     mode: '0755'
   with_items:
     - '{{ gitlab_ce_persistent_path }}/data'

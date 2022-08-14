@@ -1,0 +1,25 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+
+# Ansible manageged. Local modifactions may overwritten.
+
+external_url "https://{{ cloudinit_fqdn }}"
+gitlab_rails['auto_migrate'] = true
+
+{% if vault_postfix.smtp_username is defined and vault_postfix.smtp_username|length>0 %}
+gitlab_rails['smtp_enable'] = true
+gitlab_rails['smtp_address'] = "{{ vault_postfix.smtp_host }}"
+gitlab_rails['smtp_port'] = 587
+gitlab_rails['smtp_user_name'] = "{{ vault_postfix.smtp_username }}"
+gitlab_rails['smtp_password'] = "{{ vault_postfix.smtp_password }}"
+gitlab_rails['smtp_domain'] = "{{ vault_postfix.smtp_host }}"
+gitlab_rails['smtp_authentication'] = "login"
+gitlab_rails['smtp_enable_starttls_auto'] = true
+gitlab_rails['smtp_tls'] = true
+gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
+{% endif %}
+
+nginx['enable'] = true
+nginx['client_max_body_size'] = '250m'
+nginx['redirect_http_to_https'] = true
+nginx['ssl_certificate'] = "/etc/ssl/{{ cloudinit_fqdn }}.crt"
+nginx['ssl_certificate_key'] = "/etc/ssl/{{ cloudinit_fqdn }}.key"

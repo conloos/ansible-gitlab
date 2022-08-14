@@ -1,0 +1,39 @@
+---
+- name: Create Backup of gitlab.rb
+  block:
+    - name: Check if gitlab.rb.bak exist
+      ansible.builtin.stat:
+        path: "{{ gitlab_ce_persistent_path }}/config/gitlab.rb.bak"
+      register: config_path_result
+
+    - name: If no backup exist, create them.
+      ansible.builtin.copy:
+        src: "{{ gitlab_ce_persistent_path }}/config/gitlab.rb"
+        dest: "{{ gitlab_ce_persistent_path }}/config/gitlab.rb.bak"
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0400"
+      when: not config_path_result.stat.exists
+
+- name: Check if certificate exist
+  ansible.builtin.stat:
+    path: "/etc/ssl/{{ cloudinit_fqdn }}.crt"
+  register: crt_path_result
+
+- name: Use https, if public cert is available.
+  block:
+    - name: copy gitlab.rb.j2
+      ansible.builtin.template:
+        src: gitlab.rb.j2
+        dest: "{{ gitlab_ce_persistent_path }}/config/gitlab.rb"
+        trim_blocks: true
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: start gitlab-ctl to apply changes
+      ansible.builtin.shell:
+        cmd: "/usr/bin/docker exec gitlab-ce-{{ gitlab_ce_version_tag }} gitlab-ctl reconfigure"
+  when: crt_path_result.stat.exists
+...

@@ -1,38 +1,36 @@
-Role Name
-=========
+# Ansible role for building and running gitlab-ce.
+=================================================
 
-A brief description of the role goes here.
+**summary**
+This role is for building and running gitlab-ce (the docker container version). 
+Look in the tasks directory for each configuration.
+All configurations are held atomically via their own files.
 
-Requirements
-------------
+## Necessary preparations
+A docker runtime environment must exist on the system.
+Or use: https://github.com/conloos/ansible-docker
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Variables that have to be defined
 
-Role Variables
---------------
+| variable | description | mandantory |
+| -------- | ----------- | ---------- |
+| gitlab_ce_version_tag | Docker conainer TAG to pull. | False - predefined |
+| gitlab_ce_persistent_path | Path to the persisten storage for docker container. | False - predefined |
+| gitlab_ce_hostname | FQDNn of the host. | True |
+| ssl_crt_path | Path to the ssl-crt for the webserver. | False |
+| ssl_key_path | Path to the ssl-key for the webserver. | False |
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+# example playbook
+```
+---
+- hosts: 
+    - example.com
+  become: true
+  vars:
+    gitlab_ce_hostname: example.com
+  vars_files:
+    - group_vars/vault.yml
+  tasks:
+  roles:
+    - ansible-gitlab_ce
+```

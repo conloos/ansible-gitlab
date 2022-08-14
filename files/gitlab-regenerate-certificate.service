@@ -1,0 +1,15 @@
+# Ansible manageged. Local modifactions may overwritten.
+
+[Unit]
+Description=Step TLS Renewer - Gitlab Certificarte
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+WorkingDirectory=/usr/local/bin
+Environment=STEPPATH=/root/.step
+ExecStart=/usr/local/bin/gitlab-regenerate-certificate.sh
+
+[Install]
+WantedBy=multi-user.target

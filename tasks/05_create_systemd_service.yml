@@ -1,0 +1,88 @@
+---
+- name: Populate service facts
+  service_facts:
+
+# Disable systemd file watcher for gitlab-nginx certificate if filewatcher was enabled in a previous run. 
+- block:
+  - name: disable service gitlab-ssl.path
+    ansible.builtin.systemd:
+      name: gitlab-ssl.path
+      state: stopped
+      enabled: no
+      masked: no
+      daemon_reload: yes
+    when: ssl_crt_path is defined and "'gitlab-ssl.path' in services" | bool
+
+# create gitlab service (restart or stop container)
+- block:
+  - name: copy gitlab.service to systemd configs
+    ansible.builtin.template:
+      src: gitlab.service.j2
+      dest: /etc/systemd/system/gitlab.service
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Enable service gitlab.service and ensure it is not masked
+    ansible.builtin.systemd:
+      name: gitlab
+      state: started
+      enabled: yes
+      masked: no
+      daemon_reload: yes
+
+# certificates
+- block:
+  # service to create or renew certificates
+    # Bash script to regenerate certificates new or renew
+  - name: copy gitlab-regenerate-certificate.sh.j2
+    ansible.builtin.template:
+      src: gitlab-regenerate-certificate.sh.j2
+      dest: '/usr/local/bin/gitlab-regenerate-certificate.sh'
+      owner: root
+      group: root
+      mode: '0770'
+
+  - name: copy gitlab-regenerate-certificate.service to systemd configs
+    ansible.builtin.copy:
+      src: gitlab-regenerate-certificate.service
+      dest: /etc/systemd/system/gitlab-regenerate-certificate.service
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Enable service gitlab-regenerate-certificate and ensure it is not masked
+    ansible.builtin.systemd:
+      name: gitlab-regenerate-certificate
+      state: started
+      enabled: yes
+      masked: no
+      daemon_reload: yes
+  
+  # copy service to trigger the gitlab.service for restart, because cert has changed
+  - name: copy gitlab-ssl.service to systemd configs
+    ansible.builtin.copy:
+      src: gitlab-ssl.service
+      dest: /etc/systemd/system/gitlab-ssl.service
+      owner: root
+      group: root
+      mode: '0644'
+
+  # whatchdog for the cert path
+  - name: copy gitlab-ssl.path
+    ansible.builtin.template:
+      src: gitlab-ssl.path.j2
+      dest: '/etc/systemd/system/gitlab-ssl.path'
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Make sure gitlab-ssl.path service unit is running
+    ansible.builtin.systemd:
+      name: gitlab-ssl.path
+      state: started
+      enabled: yes
+      masked: no
+      daemon_reload: yes
+  when: ssl_crt_path is defined
+...

@@ -1,4 +1,8 @@
 ---
-gitlab_ce_version_tag: '15.2.2-ce.0'
-gitlab_ce_persistent_path: '/srv/gitlab'
+gitlab_ce_version_tag: "15.2.2-ce.0"
+gitlab_ce_persistent_path: "/srv/gitlab"
+gitlab_ce_hostname: "{{ cloudinit_fqdn }}"
+
+ssl_crt_path: "/etc/ssl/{{ cloudinit_fqdn }}.crt"
+ssl_key_path: "/etc/ssl/{{ cloudinit_fqdn }}.key"
 ...

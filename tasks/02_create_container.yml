@@ -4,27 +4,27 @@
   community.docker.docker_image:
     name: gitlab/gitlab-ce
     source: pull
-    tag: '{{ gitlab_ce_version_tag }}'
+    tag: "{{ gitlab_ce_version_tag }}"
     pull:
       platform: amd64
 
 # start hbbs - RustDesk ID/Rendezvous server
 - name: create container gitlab_ce
   community.docker.docker_container:
-    name: gitlab-ce
-    image: 'gitlab/gitlab-ce:{{ gitlab_ce_version_tag }}'
+    name: "gitlab-ce-{{ gitlab_ce_version_tag }}"
+    image: "gitlab/gitlab-ce:{{ gitlab_ce_version_tag }}"
     state: started
     restart_policy: always
-    # command: ''
     env:
       GITLAB_HOME: '{{ gitlab_ce_persistent_path }}'
+    # command: ''
     # links:
-    hostname: '{{ gitlab_ce_hostname }}'
-    network_mode: host
+    #network_mode: host
     tty: true
     interactive: true
     cleanup: true
     shm_size: 256m 
+    hostname: "{{ gitlab_ce_hostname }}"
     ports:
       # tcp - http
       - "80:80"
@@ -35,9 +35,10 @@
       # udp - https
       - "443:443/udp"
       # tcp - ssh
-      - "22:22"
+      - "2222:2222"
     volumes:
-      - '{{ gitlab_ce_persistent_path }}/data:/var/opt/gitlab'
-      - '{{ gitlab_ce_persistent_path }}/logs:/var/log/gitlab'
-      - '{{ gitlab_ce_persistent_path }}/config:/etc/gitlab'
+      - "{{ gitlab_ce_persistent_path }}/data:/var/opt/gitlab"
+      - "{{ gitlab_ce_persistent_path }}/logs:/var/log/gitlab"
+      - "{{ gitlab_ce_persistent_path }}/config:/etc/gitlab"
+      - "/etc/ssl:/etc/ssl"
 ...

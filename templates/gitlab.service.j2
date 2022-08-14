@@ -1,0 +1,18 @@
+# Ansible manageged. Local modifactions may overwritten.
+
+[Unit]
+Description=Docker restart/stop gitlab-ce
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/usr/bin/
+ExecStart=/usr/bin/docker restart gitlab-ce-{{ gitlab_ce_version_tag }}
+ExecStop=/usr/bin/docker stop gitlab-ce-{{ gitlab_ce_version_tag }}
+TimeoutStartSec=0
+
+
+[Install]
+WantedBy=multi-user.target

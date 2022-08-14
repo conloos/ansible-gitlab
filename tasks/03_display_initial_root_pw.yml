@@ -1,8 +1,14 @@
 ---
+# wait for key
+- name: wait for public key creation
+  ansible.builtin.wait_for:
+    path: "{{ gitlab_ce_persistent_path }}/config/initial_root_password"
+    state: present
+
 # initial_root_password
 - name: read initial_root_password
   ansible.builtin.slurp:
-    src: "/etc/gitlab/initial_root_password"
+    src: "{{ gitlab_ce_persistent_path }}/config/initial_root_password"
   register: gitlab_ce_initial_root_password
 
 # display public key
