@@ -46,7 +46,7 @@ if [[ -f /var/run/gitlab-ssl.pid ]] ; then
 fi
 
 # Stop Container - acme needs port 80
-$DOCKER_PATH stop DOCKER_CONTAINER_NAME
+$DOCKER_PATH stop $DOCKER_CONTAINER_NAME
 
 # Generate Cert
 $STEP_CLI_PATH ca certificate $FQDN $CERT_FILENAME_PATH $CERT_KEY_PATH --force
@@ -55,7 +55,7 @@ $STEP_CLI_PATH ca certificate $FQDN $CERT_FILENAME_PATH $CERT_KEY_PATH --force
 returnValue=$?
 
 # Start Container
-$DOCKER_PATH start DOCKER_CONTAINER_NAME
+$DOCKER_PATH start $DOCKER_CONTAINER_NAME
 
 if [[ $returnValue -eq 0 ]] ; then
   echo $! > /var/run/gitlab-ssl.pid
