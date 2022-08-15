@@ -18,8 +18,8 @@
 
 - name: Check if certificate exist
   ansible.builtin.stat:
-    path: "/etc/ssl/{{ cloudinit_fqdn }}.crt"
-  register: crt_path_result
+    path: ssl_crt_path
+  register: ssl_crt_path_result
 
 - name: Use https, if public cert is available.
   block:
@@ -35,5 +35,5 @@
     - name: start gitlab-ctl to apply changes
       ansible.builtin.shell:
         cmd: "/usr/bin/docker exec gitlab-ce-{{ gitlab_ce_version_tag }} gitlab-ctl reconfigure"
-  when: crt_path_result.stat.exists
+  when: ssl_crt_path is defined and ssl_crt_path_result.stat.exists
 ...
