@@ -1,28 +1,13 @@
 ---
 - name: Check if certificate exist
   ansible.builtin.stat:
-    path: ssl_crt_path
+    path: "{{ ssl_crt_path }}"
   register: ssl_crt_path_result
 
 - name: Configure gitlab for acme ssl 
   block:
-    # Disable systemd file watcher for gitlab-nginx certificate if filewatcher was enabled in a previous run. 
-    - name: Disable systemd filewatcher while cert (re)configuration.
-      block:
-        - name: Populate service facts
-          service_facts:
-
-        - name: disable service gitlab-ssl.path
-          ansible.builtin.systemd:
-            name: gitlab-ssl.path
-            state: stopped
-            enabled: no
-            masked: no
-            daemon_reload: yes
-          when: ssl_crt_path is defined and "'gitlab-ssl.path' in services" | bool
-
     # create gitlab service (restart or stop container)
-    - name: Configue systemd service fpr gitlab
+    - name: Configue systemd service for gitlab
       block:
         - name: copy gitlab.service to systemd configs
           ansible.builtin.template:

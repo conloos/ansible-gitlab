@@ -41,4 +41,5 @@
       - "{{ gitlab_ce_persistent_path }}/logs:/var/log/gitlab"
       - "{{ gitlab_ce_persistent_path }}/config:/etc/gitlab"
       - "/etc/ssl:/etc/ssl"
+      - "/usr/local/share/ca-certificates:/usr/local/share/ca-certificates"
 ...

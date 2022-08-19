@@ -18,7 +18,7 @@
 
 - name: Check if certificate exist
   ansible.builtin.stat:
-    path: ssl_crt_path
+    path: "{{ ssl_crt_path }}"
   register: ssl_crt_path_result
 
 - name: Use https, if public cert is available.

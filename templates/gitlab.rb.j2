@@ -2,7 +2,16 @@
 
 # Ansible manageged. Local modifactions may overwritten.
 
+{% if ssl_crt_path is defined and ssl_crt_path_result.stat.exists %}
 external_url "https://{{ cloudinit_fqdn }}"
+nginx['enable'] = true
+nginx['client_max_body_size'] = '250m'
+nginx['redirect_http_to_https'] = true
+nginx['ssl_certificate'] = "/etc/ssl/{{ cloudinit_fqdn }}.crt"
+nginx['ssl_certificate_key'] = "/etc/ssl/{{ cloudinit_fqdn }}.key"
+{% else %}
+external_url "http://{{ cloudinit_fqdn }}"
+{% endif %}
 gitlab_rails['auto_migrate'] = true
 
 {% if vault_postfix.smtp_username is defined and vault_postfix.smtp_username|length>0 %}
@@ -18,8 +27,36 @@ gitlab_rails['smtp_tls'] = true
 gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
 {% endif %}
 
-nginx['enable'] = true
-nginx['client_max_body_size'] = '250m'
-nginx['redirect_http_to_https'] = true
-nginx['ssl_certificate'] = "/etc/ssl/{{ cloudinit_fqdn }}.crt"
-nginx['ssl_certificate_key'] = "/etc/ssl/{{ cloudinit_fqdn }}.key"
+# Test LDAP
+# ldapsearch -H ldaps://ad2.bodomos.lan:636 -D 'CN=Gitlab Service Account,CN=Users,DC=bodomos,DC=lan' -W -b 'DC=bodomos,DC=lan' -v
+# gitlab-ctl reconfigure
+# gitlab-rake gitlab:ldap:check
+gitlab_rails['ldap_enabled'] = true
+gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
+main:
+  label: 'BODOMOS AD'
+  host: 'ad2.bodomos.lan'
+  port: 636
+  uid: 'sAMAccountName'
+  encryption: 'simple_tls' # 'simple_tls'
+  verify_certificates: false
+  bind_dn: 'CN=Gitlab Service Account,CN=Users,DC=bodomos,DC=lan'
+  password: '93NXDAfQgWMre'
+  active_directory: true
+  base: 'CN=Users,DC=bodomos,DC=lan'
+  group_base: 'CN=Users,DC=bodomos,DC=lan'
+  admin_group: 'group_bodomos'
+  block_auto_created_users: false
+  allow_username_or_email_login: false
+  #tls_options:
+  #  ca_file: "/etc/ssl/certs/Bododmos_Internal_fullchain.pem"
+  #  ssl_version: "TLSv1"
+  #user_filter: ‘(memberOf=CN=grpGitlab,OU=Application,OU=Servers,DC=example,DC=com)’
+  #user_filter: 'uid'
+  attributes:
+    username: ['uid', 'userid', 'sAMAccountName']
+    email: ['mail', 'email', 'userPrincipalName']
+    name: 'cn'
+    first_name: 'givenName'
+    last_name: 'sn'
+EOS
