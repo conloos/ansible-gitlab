@@ -1,4 +1,9 @@
 ---
+- name: remove old container
+  community.docker.docker_container:
+    name: "gitlab-ce-{{ gitlab_ce_version_tag }}"
+    state: absent
+
 # get gitlab-ce
 - name: pull gitlab-ce
   community.docker.docker_image:
