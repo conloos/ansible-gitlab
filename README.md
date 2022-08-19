@@ -34,12 +34,17 @@ If you need an other setup please change the ```templates/gitlab.rb```.
 
 You need an AD-User-Account: ***Please make sure to secure this account as much as possible. It makes sense to remove the user from the "Domain Users" group. If necessary (e.g. you use rfc2307 to manage posix account in the ad), a group without rights should be created and set as primary group.***
 
-# ToDo
-https://docs.gitlab.com/ee/administration/auth/ldap/
-https://madafa.de/blog/set-up-gitlab-mit-active-directory-authentifizierung
-http://repositories.compbio.cs.cmu.edu/help/administration/auth/how_to_configure_ldap_gitlab_ce/index.md *
-https://www.ecanarys.com/Blogs/ArticleID/393/LDAP-Integration-with-Gitlab
-https://www.thierolf.org/blog/2021/gitlab-ad-ldap-integration/
+| variable | description | mandantory |
+| -------- | ----------- | ---------- |
+| gl_ad_integration | Bool if gitlab should use LDAP/AD | false |
+| gl_auth_description| AuthType Label for webfrontend | false |
+| gl_dc_fqdn | FQDN to the dc- or ldap-server. | false |
+| gl_bind_dn | AD user account to read LDAP. | false |
+| gl_bind_pw | AD user password to read LDAP. | false |
+| gl_base | LDAP search base for user-accounts. | false |
+| gl_group_base | LDAP search base for group-accounts. | false |
+| gl_admin_group | Gitlab admin group. | false |
+
 
 # example playbook
 ```
