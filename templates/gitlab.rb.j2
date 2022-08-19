@@ -27,25 +27,26 @@ gitlab_rails['smtp_tls'] = true
 gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
 {% endif %}
 
+{% if gl_ad_integration is defined an gl_ad_integration|bool %}
 # Test LDAP
-# ldapsearch -H ldaps://ad2.bodomos.lan:636 -D 'CN=Gitlab Service Account,CN=Users,DC=bodomos,DC=lan' -W -b 'DC=bodomos,DC=lan' -v
+# ldapsearch -H ldaps://<AD-DC>.lan:636 -D '<USER>' -W -b '<Base DN>' -v
 # gitlab-ctl reconfigure
 # gitlab-rake gitlab:ldap:check
 gitlab_rails['ldap_enabled'] = true
 gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
 main:
-  label: 'BODOMOS AD'
-  host: 'ad2.bodomos.lan'
+  label: "{{ gl_auth_description }}"
+  host: "{{ gl_dc_fqdn }}"
   port: 636
   uid: 'sAMAccountName'
   encryption: 'simple_tls' # 'simple_tls'
   verify_certificates: false
-  bind_dn: 'CN=Gitlab Service Account,CN=Users,DC=bodomos,DC=lan'
-  password: '93NXDAfQgWMre'
+  bind_dn: "{{ gl_bind_dn }}"
+  password: "{{ gl_bind_pw }}"
   active_directory: true
-  base: 'CN=Users,DC=bodomos,DC=lan'
-  group_base: 'CN=Users,DC=bodomos,DC=lan'
-  admin_group: 'group_bodomos'
+  base: "{{ gl_base }}"
+  group_base: "{{ gl_group_base }}"
+  admin_group: "{{ gl_admin_group }}"
   block_auto_created_users: false
   allow_username_or_email_login: false
   #tls_options:
@@ -60,3 +61,4 @@ main:
     first_name: 'givenName'
     last_name: 'sn'
 EOS
+{% endif %}
