@@ -27,7 +27,7 @@ gitlab_rails['smtp_tls'] = true
 gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
 {% endif %}
 
-{% if gl_ad_integration is defined an gl_ad_integration|bool %}
+{% if gl_ad_integration is defined and gl_ad_integration|bool %}
 # Test LDAP
 # ldapsearch -H ldaps://<AD-DC>.lan:636 -D '<USER>' -W -b '<Base DN>' -v
 # gitlab-ctl reconfigure
@@ -40,7 +40,7 @@ main:
   port: 636
   uid: 'sAMAccountName'
   encryption: 'simple_tls' # 'simple_tls'
-  verify_certificates: false
+  verify_certificates: true
   bind_dn: "{{ gl_bind_dn }}"
   password: "{{ gl_bind_pw }}"
   active_directory: true
