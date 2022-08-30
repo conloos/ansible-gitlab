@@ -36,14 +36,14 @@ You need an AD-User-Account: ***Please make sure to secure this account as much 
 
 | variable | description | mandantory |
 | -------- | ----------- | ---------- |
-| gl_ad_integration | Bool if gitlab should use LDAP/AD | false |
-| gl_auth_description| AuthType Label for webfrontend | false |
-| gl_dc_fqdn | FQDN to the dc- or ldap-server. | false |
-| gl_bind_dn | AD user account to read LDAP. | false |
-| gl_bind_pw | AD user password to read LDAP. | false |
-| gl_base | LDAP search base for user-accounts. | false |
-| gl_group_base | LDAP search base for group-accounts. | false |
-| gl_admin_group | Gitlab admin group. | false |
+| gl_ad_integration | Bool if gitlab should use LDAP/AD | False |
+| gl_auth_description| AuthType Label for webfrontend | False |
+| gl_dc_fqdn | FQDN to the dc- or ldap-server. | False |
+| gl_bind_dn | AD user account to read LDAP. | False |
+| gl_bind_pw | AD user password to read LDAP. | False |
+| gl_base | LDAP search base for user-accounts. | False |
+| gl_group_base | LDAP search base for group-accounts. | False |
+| gl_admin_group | Gitlab admin group. | False |
 
 
 # example playbook
@@ -51,7 +51,7 @@ You need an AD-User-Account: ***Please make sure to secure this account as much 
 ---
 - hosts: 
     - example.com
-  become: true
+  become: True
   vars:
     gitlab_ce_hostname: example.com
   vars_files:

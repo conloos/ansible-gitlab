@@ -4,26 +4,26 @@
 
 {% if ssl_crt_path is defined and ssl_crt_path_result.stat.exists %}
 external_url "https://{{ cloudinit_fqdn }}"
-nginx['enable'] = true
+nginx['enable'] = True
 nginx['client_max_body_size'] = '250m'
-nginx['redirect_http_to_https'] = true
+nginx['redirect_http_to_https'] = True
 nginx['ssl_certificate'] = "/etc/ssl/{{ cloudinit_fqdn }}.crt"
 nginx['ssl_certificate_key'] = "/etc/ssl/{{ cloudinit_fqdn }}.key"
 {% else %}
 external_url "http://{{ cloudinit_fqdn }}"
 {% endif %}
-gitlab_rails['auto_migrate'] = true
+gitlab_rails['auto_migrate'] = True
 
 {% if vault_postfix.smtp_username is defined and vault_postfix.smtp_username|length>0 %}
-gitlab_rails['smtp_enable'] = true
+gitlab_rails['smtp_enable'] = True
 gitlab_rails['smtp_address'] = "{{ vault_postfix.smtp_host }}"
 gitlab_rails['smtp_port'] = 587
 gitlab_rails['smtp_user_name'] = "{{ vault_postfix.smtp_username }}"
 gitlab_rails['smtp_password'] = "{{ vault_postfix.smtp_password }}"
 gitlab_rails['smtp_domain'] = "{{ vault_postfix.smtp_host }}"
 gitlab_rails['smtp_authentication'] = "login"
-gitlab_rails['smtp_enable_starttls_auto'] = true
-gitlab_rails['smtp_tls'] = true
+gitlab_rails['smtp_enable_starttls_auto'] = True
+gitlab_rails['smtp_tls'] = True
 gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
 {% endif %}
 
@@ -32,7 +32,7 @@ gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
 # ldapsearch -H ldaps://<AD-DC>.lan:636 -D '<USER>' -W -b '<Base DN>' -v
 # gitlab-ctl reconfigure
 # gitlab-rake gitlab:ldap:check
-gitlab_rails['ldap_enabled'] = true
+gitlab_rails['ldap_enabled'] = True
 gitlab_rails['ldap_servers'] = YAML.load <<-'EOS'
 main:
   label: "{{ gl_auth_description }}"
@@ -40,15 +40,15 @@ main:
   port: 636
   uid: 'sAMAccountName'
   encryption: 'simple_tls' # 'simple_tls'
-  verify_certificates: true
+  verify_certificates: True
   bind_dn: "{{ gl_bind_dn }}"
   password: "{{ gl_bind_pw }}"
-  active_directory: true
+  active_directory: True
   base: "{{ gl_base }}"
   group_base: "{{ gl_group_base }}"
   admin_group: "{{ gl_admin_group }}"
-  block_auto_created_users: false
-  allow_username_or_email_login: false
+  block_auto_created_users: False
+  allow_username_or_email_login: False
   #tls_options:
   #  ca_file: "/etc/ssl/certs/Bododmos_Internal_fullchain.pem"
   #  ssl_version: "TLSv1"

@@ -10,7 +10,7 @@
       ansible.builtin.copy:
         src: "{{ gitlab_ce_persistent_path }}/config/gitlab.rb"
         dest: "{{ gitlab_ce_persistent_path }}/config/gitlab.rb.bak"
-        remote_src: true
+        remote_src: True
         owner: root
         group: root
         mode: "0400"
@@ -27,7 +27,7 @@
       ansible.builtin.template:
         src: gitlab.rb.j2
         dest: "{{ gitlab_ce_persistent_path }}/config/gitlab.rb"
-        trim_blocks: true
+        trim_blocks: True
         owner: root
         group: root
         mode: '0600'

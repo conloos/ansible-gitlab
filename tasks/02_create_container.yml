@@ -25,9 +25,9 @@
     # command: ''
     # links:
     #network_mode: host
-    tty: true
-    interactive: true
-    cleanup: true
+    tty: True
+    interactive: True
+    cleanup: True
     shm_size: 256m 
     hostname: "{{ gitlab_ce_hostname }}"
     ports:
