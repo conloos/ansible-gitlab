@@ -2,7 +2,7 @@
   # wait for key
   # The key is only written to disk if there is a fresh installation.
   # After changing the pw, no file is createt, so we cant wait till creation.
-- name: wait for public key creation
+- name: Wait for public key creation
   ansible.builtin.wait_for:
     timeout: 60
 
@@ -11,17 +11,16 @@
     path: "{{ gitlab_ce_persistent_path }}/config/initial_root_password"
   register: initial_root_password_path
 
-- name: read key
+- name: Read key
   block:
     # initial_root_password
-    - name: read initial_root_password
+    - name: Read initial_root_password
       ansible.builtin.slurp:
         src: "{{ gitlab_ce_persistent_path }}/config/initial_root_password"
       register: gitlab_ce_initial_root_password
 
     # display public key
-    - name: display public key
+    - name: Display public key
       ansible.builtin.debug:
-        msg: "The gitlab-ce initial root password is: {{ gitlab_ce_initial_root_password['content'] | b64decode }}. If not allready done: please change this immediately. "
-  when: initial_root_password_path.stat.exists
+        msg: "The gitlab-ce initial root password is: {{ gitlab_ce_initial_root_password['content'] | b64decode }}. If not allready done: please change this immediately. "  # noqa yaml  when: initial_root_password_path.stat.exists
 ...

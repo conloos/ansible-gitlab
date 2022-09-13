@@ -1,9 +1,10 @@
+---
 argument_specs:
   main:
     # https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html#role-argument-validation
     # https://docs.ansible.com/ansible/latest/dev_guide/developing_program_flow_modules.html#argument-spec
-    short_description: Pull gitlab docker container and create an instance.
-    description: Pull gitlab docker container and create an instance.
+    short_description: Role for installing gitlab by docker container.
+    description: Role for installing gitlab by docker container.
     author:
       - Frank Dornheim
     options:
@@ -33,7 +34,7 @@ argument_specs:
         type: str
         description: AuthType Label for webfrontend
       gl_dc_fqdn:
-        type: str 
+        type: str
         description: FQDN to the dc- or ldap-server.
       gl_bind_dn:
         type: str
@@ -50,3 +51,4 @@ argument_specs:
       gl_admin_group:
         type: str
         description: Gitlab admin group.
+...

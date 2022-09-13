@@ -10,7 +10,7 @@
       ansible.builtin.copy:
         src: "{{ gitlab_ce_persistent_path }}/config/gitlab.rb"
         dest: "{{ gitlab_ce_persistent_path }}/config/gitlab.rb.bak"
-        remote_src: True
+        remote_src: true
         owner: root
         group: root
         mode: "0400"
@@ -23,17 +23,17 @@
 
 - name: Use https, if public cert is available.
   block:
-    - name: copy gitlab.rb.j2
+    - name: Copy gitlab.rb.j2
       ansible.builtin.template:
         src: gitlab.rb.j2
         dest: "{{ gitlab_ce_persistent_path }}/config/gitlab.rb"
-        trim_blocks: True
+        trim_blocks: true
         owner: root
         group: root
         mode: '0600'
 
-    - name: start gitlab-ctl to apply changes
-      ansible.builtin.shell:
+    - name: Start gitlab-ctl to apply changes  # noqa no-changed-when
+      ansible.builtin.command:
         cmd: "/usr/bin/docker exec gitlab-ce-{{ gitlab_ce_version_tag }} gitlab-ctl reconfigure"
   when: ssl_crt_path is defined and ssl_crt_path_result.stat.exists
 ...

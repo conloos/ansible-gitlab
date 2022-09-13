@@ -1,11 +1,11 @@
 ---
-- name: remove old container
+- name: Remove old container
   community.docker.docker_container:
     name: "gitlab-ce-{{ gitlab_ce_version_tag }}"
     state: absent
 
 # get gitlab-ce
-- name: pull gitlab-ce
+- name: Pull gitlab-ce
   community.docker.docker_image:
     name: gitlab/gitlab-ce
     source: pull
@@ -14,7 +14,7 @@
       platform: amd64
 
 # start hbbs - RustDesk ID/Rendezvous server
-- name: create container gitlab_ce
+- name: Create container gitlab_ce
   community.docker.docker_container:
     name: "gitlab-ce-{{ gitlab_ce_version_tag }}"
     image: "gitlab/gitlab-ce:{{ gitlab_ce_version_tag }}"
@@ -24,11 +24,11 @@
       GITLAB_HOME: '{{ gitlab_ce_persistent_path }}'
     # command: ''
     # links:
-    #network_mode: host
-    tty: True
-    interactive: True
-    cleanup: True
-    shm_size: 256m 
+    # network_mode: host
+    tty: true
+    interactive: true
+    cleanup: true
+    shm_size: 256m
     hostname: "{{ gitlab_ce_hostname }}"
     ports:
       # tcp - http

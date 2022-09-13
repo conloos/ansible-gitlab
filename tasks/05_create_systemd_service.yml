@@ -4,12 +4,12 @@
     path: "{{ ssl_crt_path }}"
   register: ssl_crt_path_result
 
-- name: Configure gitlab for acme ssl 
+- name: Configure gitlab for acme ssl
   block:
     # create gitlab service (restart or stop container)
     - name: Configue systemd service for gitlab
       block:
-        - name: copy gitlab.service to systemd configs
+        - name: Copy gitlab.service to systemd configs
           ansible.builtin.template:
             src: gitlab.service.j2
             dest: /etc/systemd/system/gitlab.service
@@ -21,16 +21,16 @@
           ansible.builtin.systemd:
             name: gitlab
             state: started
-            enabled: yes
-            masked: no
-            daemon_reload: yes
+            enabled: true
+            masked: false
+            daemon_reload: true
 
       # certificates
       # service to create or renew certificates
     - name: Configure gitlab SSL acme environment
-      block:  
+      block:
           # Bash script to regenerate certificates new or renew
-        - name: copy gitlab-regenerate-certificate.sh.j2
+        - name: Copy gitlab-regenerate-certificate.sh.j2
           ansible.builtin.template:
             src: gitlab-regenerate-certificate.sh.j2
             dest: '/usr/local/bin/gitlab-regenerate-certificate.sh'
@@ -38,7 +38,7 @@
             group: root
             mode: '0770'
 
-        - name: copy gitlab-regenerate-certificate.service to systemd configs
+        - name: Copy gitlab-regenerate-certificate.service to systemd configs
           ansible.builtin.copy:
             src: gitlab-regenerate-certificate.service
             dest: /etc/systemd/system/gitlab-regenerate-certificate.service
@@ -50,12 +50,12 @@
           ansible.builtin.systemd:
             name: gitlab-regenerate-certificate
             state: started
-            enabled: yes
-            masked: no
-            daemon_reload: yes
-        
+            enabled: true
+            masked: false
+            daemon_reload: true
+
         # copy service to trigger the gitlab.service for restart, because cert has changed
-        - name: copy gitlab-ssl.service to systemd configs
+        - name: Copy gitlab-ssl.service to systemd configs
           ansible.builtin.copy:
             src: gitlab-ssl.service
             dest: /etc/systemd/system/gitlab-ssl.service
@@ -64,7 +64,7 @@
             mode: '0644'
 
         # whatchdog for the cert path
-        - name: copy gitlab-ssl.path
+        - name: Copy gitlab-ssl.path
           ansible.builtin.template:
             src: gitlab-ssl.path.j2
             dest: '/etc/systemd/system/gitlab-ssl.path'
@@ -76,8 +76,8 @@
           ansible.builtin.systemd:
             name: gitlab-ssl.path
             state: started
-            enabled: yes
-            masked: no
-            daemon_reload: yes
+            enabled: true
+            masked: false
+            daemon_reload: true
   when: ssl_crt_path is defined and ssl_crt_path_result.stat.exists
 ...
