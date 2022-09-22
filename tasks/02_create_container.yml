@@ -13,7 +13,7 @@
     pull:
       platform: amd64
 
-# start hbbs - RustDesk ID/Rendezvous server
+# Create container gitlab_ce
 - name: Create container gitlab_ce
   community.docker.docker_container:
     name: "gitlab-ce-{{ gitlab_ce_version_tag }}"
